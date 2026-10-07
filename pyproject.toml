@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rag-citation-auditor-alan-vo"
-version = "1.0.0"
+version = "1.1.0"
 description = "Audits RAG answers against cited passages with deterministic sentence attribution, numeric claim verification, and human evidence review."
 readme = "README.md"
 requires-python = ">=3.12"
