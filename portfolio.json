@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "name": "rag-citation-auditor-alan-vo",
+  "owner": "ALANDVO",
+  "email": "alanvo@gmail.com",
+  "domain": "rag",
+  "summary": "Audits RAG answers against cited passages with deterministic sentence attribution, numeric claim verification, and human evidence review.",
+  "workflows": [
+    "Import generated answers and source passages with structured citation references",
+    "Deterministic sentence-level citation verification and numeric claim audit",
+    "Human evidence review queue with discrepancy resolution and metric exports"
+  ],
+  "auth": "oidc-keycloak-saml-broker",
+  "llm_providers": [
+    "openai-compatible",
+    "anthropic",
+    "gemini",
+    "ollama"
+  ],
+  "version": "1.0.0"
+}
