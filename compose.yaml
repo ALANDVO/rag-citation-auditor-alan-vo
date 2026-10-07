@@ -1,0 +1,68 @@
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.4
+    command: start-dev --import-realm
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin_password_change_me
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+      - ./deploy/keycloak-realm.json:/opt/keycloak/data/import/keycloak-realm.json:ro
+    ports:
+      - "127.0.0.1:8080:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080 && echo -e 'GET /health/ready HTTP/1.1\\r\\nHost: 127.0.0.1\\r\\n\\r\\n' >&3 && grep -q '200 OK' <&3 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      ENVIRONMENT: development
+      PORT: 8000
+      DATABASE_URL: sqlite:////app/data/auditor.db
+      DEMO_MODE: "false"
+      OIDC_ISSUER_URL: http://127.0.0.1:8080/realms/rag-citation-auditor
+      OIDC_CLIENT_ID: rag-auditor-backend
+      OIDC_CLIENT_SECRET: ""
+      OIDC_REDIRECT_URI: http://127.0.0.1:8000/api/v1/auth/callback
+      LLM_API_KEY: ""
+      LLM_PROVIDER: openai-compatible
+      LLM_MODEL: qwen3.8-27b
+      LLM_BASE_URL: https://llm.chris-vo.com/v1
+    volumes:
+      - backend_data:/app/data
+    ports:
+      - "127.0.0.1:8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8000/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    depends_on:
+      keycloak:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:3000:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8080/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  keycloak_data:
+  backend_data:
