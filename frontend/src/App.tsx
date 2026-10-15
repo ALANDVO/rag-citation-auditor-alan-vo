@@ -92,7 +92,7 @@ export const App: React.FC = () => {
 
       <footer className="app-footer">
         <div className="footer-content">
-          <span>RAG Citation & Faithfulness Auditor v1.0.0</span>
+          <span>RAG Citation & Faithfulness Auditor v1.1.0</span>
           <span>Designed & Built by Alan Vo (<a href="mailto:alanvo@gmail.com">alanvo@gmail.com</a>) &bull; GitHub ALANDVO</span>
         </div>
       </footer>

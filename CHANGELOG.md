@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.2.0 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
+## [1.1.1] - 2026-10-15
+
+### Added
+- Extended evaluation benchmark suite with 4 new edge-case samples (extreme paraphrasing, implicit unit conversion, partial numeric support, multi-citation with unlinked reference).
+- Updated benchmark results: 12 samples, 100% precision/recall/F1 maintained, 0% false alarm rate.
+- Documentation updates: README limitations section now reflects actual engine behavior for edge cases with concrete benchmark references.
+
+### Fixed
+- Version consistency: backend config.py VERSION now matches portfolio.json (1.1.0) and frontend package.json.
+- Frontend footer version updated to 1.1.0.
+
 ## [1.1.0] - 2026-10-07
 
 All notable changes to this project will be documented in this file.

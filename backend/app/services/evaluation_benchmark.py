@@ -57,6 +57,33 @@ BENCHMARK_DATASET: List[Dict[str, Any]] = [
         ],
         "answer": "Quantization reduced latency by 30ms and cut memory usage by 1.2 GB [1, 2].",
         "expected_statuses": ["SUPPORTED"], "has_error": False
+    },
+    {
+        "id": "sample-09", "description": "Extreme paraphrasing with near-zero lexical overlap",
+        "passages": [{"passage_id": "doc_1", "content": "The neural network architecture achieved convergence after 150 epochs of training."}],
+        "answer": "Training the model required one hundred fifty iterations before the loss stabilized [doc_1].",
+        "expected_statuses": ["UNSUPPORTED"], "has_error": True
+    },
+    {
+        "id": "sample-10", "description": "Implicit unit conversion without explicit numbers in passage",
+        "passages": [{"passage_id": "temp_1", "content": "The reactor operates at a nominal temperature of 350 Celsius during steady state."}],
+        "answer": "Steady-state reactor temperature was measured at 662 degrees Fahrenheit [temp_1].",
+        "expected_statuses": ["NUMERIC_MISMATCH"], "has_error": True
+    },
+    {
+        "id": "sample-11", "description": "Partial numeric support — mixed accurate and inaccurate quantities",
+        "passages": [{"passage_id": "mix_1", "content": "Q4 revenue reached $42.5M with a 12.3% margin and 840 employees."}],
+        "answer": "The company posted $42.5M revenue at 12.3% margin but headcount grew to 1,200 [mix_1].",
+        "expected_statuses": ["NUMERIC_MISMATCH"], "has_error": True
+    },
+    {
+        "id": "sample-12", "description": "Multiple citations with one unlinked and one valid",
+        "passages": [
+            {"passage_id": "valid_1", "content": "Latency dropped from 120ms to 45ms after optimization."},
+            {"passage_id": "valid_2", "content": "Throughput increased by 2.5x with the new pipeline."}
+        ],
+        "answer": "Optimization cut latency to 45ms [valid_1]. Throughput grew 2.5x [valid_2]. Unverified claim here [ghost_99].",
+        "expected_statuses": ["SUPPORTED", "SUPPORTED", "UNLINKED_CITATION"], "has_error": True
     }
 ]
 

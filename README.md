@@ -1,5 +1,8 @@
 # RAG Citation & Faithfulness Auditor | Alan Vo | AI & Machine Learning
 
+> Work in progress. This checkpoint may be incomplete or fail tests. See PLAN.md and STATUS.md before use.
+
+
 Current version: `1.1.0`.
 
 Retrieval-Augmented Generation (RAG) pipelines in enterprise environments frequently produce plausible-sounding answers that hallucinate citation links, invent non-existent document identifiers (e.g., `[doc_99]`), or misstate quantitative figures (percentages, financial metrics, dates, and scales) while appearing grounded. **RAG Citation & Faithfulness Auditor** is a deterministic attribution and faithfulness auditing platform for machine learning engineers, compliance auditors, and AI evaluators. It decomposes generated answers into discrete claims, validates explicit citation links against ingested passages, verifies quantitative assertions through exact and scaled entity cross-matching, and queues disputed assertions into a human evidence review workflow.
@@ -71,7 +74,7 @@ PYTHONPATH=backend .venv/bin/python -m app.services.evaluation_benchmark
 ```
 
 ### Data Provenance & Baseline
-The evaluation dataset contains 8 labeled RAG query-answer-passage instances reflecting financial disclosures, scientific literature, technical benchmarks, and legal treaties. Instances contain ground-truth labels for valid multi-passage citations, subtle numeric percentage changes, currency magnitude shifts, calendar year discrepancies, missing citations, and unlinked passage IDs.
+The evaluation dataset contains 12 labeled RAG query-answer-passage instances reflecting financial disclosures, scientific literature, technical benchmarks, legal treaties, and documented edge cases. Instances contain ground-truth labels for valid multi-passage citations, subtle numeric percentage changes, currency magnitude shifts, calendar year discrepancies, missing citations, unlinked passage IDs, extreme paraphrasing, implicit unit conversions, mixed numeric accuracy, and multi-citation validity.
 
 The implemented engine is compared against a **Naive Token-Overlap Baseline** (unigram word-overlap threshold of 0.60 without entity extraction or citation link verification).
 
@@ -79,16 +82,17 @@ The implemented engine is compared against a **Naive Token-Overlap Baseline** (u
 
 | Metric | Implemented Deterministic Engine | Naive Overlap Baseline | Notes |
 |---|---|---|---|
-| **Precision** | **100.0%** (1.000) | 83.3% (0.833) | Correctly flags actual errors without false alarms |
-| **Recall** | **100.0%** (1.000) | 83.3% (0.833) | Catches all grounded discrepancies |
-| **Attribution F1** | **100.0%** (1.000) | 83.3% (0.833) | Harmonic mean of precision and recall |
+| **Precision** | **100.0%** (1.000) | 90.0% (0.900) | Correctly flags actual errors without false alarms |
+| **Recall** | **100.0%** (1.000) | 90.0% (0.900) | Catches all grounded discrepancies |
+| **Attribution F1** | **100.0%** (1.000) | 90.0% (0.900) | Harmonic mean of precision and recall |
 | **Numeric Error Detection** | **100.0%** (1.000) | 33.3% (0.333) | Naive overlap misses numbers when words match |
-| **False Alarm Rate** | **0.0%** (0.000) | 25.0% (0.250) | Zero clean claims falsely flagged as errors |
-| **Execution Latency** | **2.58 ms** total (~0.32 ms/sample) | 0.45 ms total | High-throughput offline verification |
+| **False Alarm Rate** | **0.0%** (0.000) | 16.7% (0.167) | Zero clean claims falsely flagged as errors |
+| **Execution Latency** | **3.93 ms** total (~0.33 ms/sample) | 0.45 ms total | High-throughput offline verification |
 
 ### Limitations & Failure Cases
-1. **Extreme Paraphrasing**: Assertions with zero lexical overlap and complex abstract paraphrasing receive moderate composite overlap scores and route to `PARTIALLY_SUPPORTED` for human review.
-2. **Implicit Unit Conversions**: Implicit multi-step conversions (e.g. converting Celsius to Fahrenheit without explicit numbers in passage) require human reviewer confirmation or optional advisory LLM analysis.
+1. **Extreme Paraphrasing**: Assertions with near-zero lexical overlap (e.g. "150 epochs" → "one hundred fifty iterations") are correctly classified as `UNSUPPORTED` by the deterministic overlap scorer, routing to high-priority human review.
+2. **Implicit Unit Conversions**: Implicit multi-step conversions (e.g. Celsius to Fahrenheit without explicit conversion values in passage) produce `NUMERIC_MISMATCH` as the engine cannot verify derived quantities; these require human reviewer confirmation or optional advisory LLM analysis.
+3. **Partial Numeric Support**: Sentences mixing accurate and inaccurate quantities (e.g. correct revenue/margin but wrong headcount) yield `NUMERIC_MISMATCH` for the entire claim; granular per-entity resolution is a future enhancement.
 
 ---
 
