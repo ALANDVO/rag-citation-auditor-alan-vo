@@ -4,7 +4,7 @@
   "owner": "ALANDVO",
   "email": "alanvo@gmail.com",
   "domain": "rag",
-  "summary": "Audits RAG answers against cited passages with deterministic sentence attribution, numeric claim verification, and human evidence review.",
+  "summary": "Work in progress: rag-citation-auditor-alan-vo",
   "workflows": [
     "Import generated answers and source passages with structured citation references",
     "Deterministic sentence-level citation verification and numeric claim audit",
@@ -17,5 +17,6 @@
     "gemini",
     "ollama"
   ],
-  "version": "1.1.0"
+  "version": "1.1.0",
+  "status": "work-in-progress"
 }
