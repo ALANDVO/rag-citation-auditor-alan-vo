@@ -126,7 +126,7 @@ Tests: `backend/tests/test_faithfulness_engine.py (existing tests cover behavior
 
 ### frontend-test-expansion — Expanded Frontend Component Test Coverage
 
-Status: planned
+Status: in_progress
 
 Acceptance:
 - Add ImportWorkflow test: preset loading, form submission flow
