@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     )
 
     PROJECT_NAME: str = "rag-citation-auditor-alan-vo"
-    VERSION: str = "1.1.0"
+    VERSION: str = "1.3.1"
     ENVIRONMENT: str = "development"
     PORT: int = 8000
     DATABASE_URL: str = "sqlite:///./auditor.db"

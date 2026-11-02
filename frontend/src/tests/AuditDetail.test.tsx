@@ -132,9 +132,11 @@ describe('AuditDetail Component', () => {
       // Check all four metric cards exist using getAllByText
       const scoreCards = screen.getAllByText((content, element) => element.tagName === 'SPAN' && element.className.includes('score-number'));
       expect(scoreCards.length).toBe(4);
-      // Verify specific metric values
-      expect(screen.getByText('67.0%')).toBeInTheDocument(); // Faithfulness (and Precision)
-      expect(screen.getByText('100.0%')).toBeInTheDocument(); // Recall (and Numeric Acc)
+      // Verify specific metric values - use getAllByText for duplicates
+      const faithfulnessElements = screen.getAllByText('67.0%');
+      expect(faithfulnessElements.length).toBeGreaterThanOrEqual(1);
+      const recallElements = screen.getAllByText('100.0%');
+      expect(recallElements.length).toBeGreaterThanOrEqual(1);
     });
   });
 
@@ -176,8 +178,11 @@ describe('AuditDetail Component', () => {
     renderComponent();
 
     await waitFor(() => {
-      expect(screen.getByText('Review: PENDING')).toBeInTheDocument();
-      expect(screen.getByText('Review: VERIFIED TRUE')).toBeInTheDocument();
+      // Match only the strong elements with review-tag class
+      const pendingReviews = screen.getAllByText((content, element) => element.tagName === 'STRONG' && element.className?.includes('review-tag') && element.textContent?.includes('PENDING'));
+      expect(pendingReviews.length).toBe(2);
+      const verifiedReviews = screen.getAllByText((content, element) => element.tagName === 'STRONG' && element.className?.includes('review-tag') && element.textContent?.includes('VERIFIED_TRUE'));
+      expect(verifiedReviews.length).toBe(1);
     });
   });
 
@@ -192,9 +197,10 @@ describe('AuditDetail Component', () => {
       expect(screen.getByText('Sentence 1')).toBeInTheDocument();
     });
 
-    // Click advisory button for claim 101
-    const advisoryBtn = screen.getByText('Run Opt-in LLM Advisory');
-    fireEvent.click(advisoryBtn);
+    // Click advisory button for first claim (there are 3 buttons, one per claim)
+    const advisoryBtns = screen.getAllByText('Run Opt-in LLM Advisory');
+    expect(advisoryBtns.length).toBe(3);
+    fireEvent.click(advisoryBtns[0]);
 
     await waitFor(() => {
       expect(screen.getByText('Analyzing...')).toBeInTheDocument();
@@ -218,7 +224,9 @@ describe('AuditDetail Component', () => {
       expect(screen.getByText('Sentence 1')).toBeInTheDocument();
     });
 
-    const advisoryBtn = screen.getByText('Run Opt-in LLM Advisory');
+    const advisoryBtns = screen.getAllByText('Run Opt-in LLM Advisory');
+    expect(advisoryBtns.length).toBe(3);
+    const advisoryBtn = advisoryBtns[0];
     fireEvent.click(advisoryBtn);
 
     await waitFor(() => {
@@ -228,7 +236,8 @@ describe('AuditDetail Component', () => {
 
     advisoryPromise.resolve(mockAdvisory);
     await waitFor(() => {
-      expect(screen.getByText('Run Opt-in LLM Advisory')).toBeInTheDocument();
+      const advisoryBtns = screen.getAllByText('Run Opt-in LLM Advisory');
+      expect(advisoryBtns.length).toBe(2); // One claim now shows advisory panel instead of button
     });
   });
 
@@ -303,7 +312,8 @@ describe('AuditDetail Component', () => {
     renderComponent();
 
     await waitFor(() => {
-      expect(screen.getByText('Run Opt-in LLM Advisory')).toBeInTheDocument();
+      const advisoryBtns = screen.getAllByText('Run Opt-in LLM Advisory');
+      expect(advisoryBtns.length).toBe(3); // 3 claims, all have advisory buttons for analyst role
     });
   });
 });

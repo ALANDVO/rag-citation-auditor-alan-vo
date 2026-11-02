@@ -46,7 +46,7 @@ export const EvaluationView: React.FC = () => {
             <h3>Benchmark Specifications & Reproducibility</h3>
             <div className="spec-table">
               <div className="spec-row"><span className="spec-name">Dataset Size:</span><span className="spec-val">{benchmark.total_samples} labeled RAG instances</span></div>
-              <div className="spec-row"><span className="spec-name">Execution Time:</span><span className="spec-val">{benchmark.execution_time_ms.toFixed(1)} ms total</span></div>
+              <div className="spec-row"><span className="spec-name">Execution Time:</span><span className="spec-val">{(benchmark.execution_time_ms ?? 0).toFixed(1)} ms total</span></div>
               <div className="spec-row"><span className="spec-name">CLI Command:</span><code className="spec-code">PYTHONPATH=backend python -m app.services.evaluation_benchmark</code></div>
             </div>
           </div>

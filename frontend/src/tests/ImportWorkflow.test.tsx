@@ -1,8 +1,33 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { ImportWorkflow } from '../components/ImportWorkflow';
-import { AuthProvider } from '../context/AuthContext';
+import { AuthContext } from '../context/AuthContext';
 import { api } from '../api/client';
+import React from 'react';
+
+const mockAnalystUser = {
+  user_id: 'test-analyst',
+  email: 'analyst@demo.local',
+  roles: ['analyst'],
+  is_authenticated: true,
+  is_demo: true,
+  csrf_token: 'test-csrf-token'
+};
+
+const TestAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const mockAuth = {
+    user: mockAnalystUser,
+    isLoading: false,
+    loginDemo: vi.fn(),
+    logout: vi.fn(),
+    refreshProfile: vi.fn(),
+  };
+  return (
+    <AuthContext.Provider value={mockAuth}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
 
 describe('ImportWorkflow Component', () => {
   beforeEach(() => {
@@ -11,9 +36,9 @@ describe('ImportWorkflow Component', () => {
 
   const mockOnAuditCreated = vi.fn();
   const renderComponent = () => render(
-    <AuthProvider>
+    <TestAuthProvider>
       <ImportWorkflow onAuditCreated={mockOnAuditCreated} />
-    </AuthProvider>
+    </TestAuthProvider>
   );
 
   it('renders with default preset values and preset buttons', () => {
@@ -26,7 +51,6 @@ describe('ImportWorkflow Component', () => {
     expect(screen.getByText('Numeric Mismatch')).toBeInTheDocument();
     expect(screen.getByText('Unlinked Citation')).toBeInTheDocument();
 
-    // Check default form values
     expect(screen.getByDisplayValue('doc_1')).toBeInTheDocument();
     expect(screen.getByDisplayValue('Semiconductor Benchmark')).toBeInTheDocument();
     expect(screen.getByDisplayValue('The 3nm architecture reached 4.2 GHz clock frequency with a 15.5% reduction in thermal dissipation.')).toBeInTheDocument();
@@ -96,14 +120,10 @@ describe('ImportWorkflow Component', () => {
   });
 
   it('verifies component renders and role check logic exists', () => {
-    // The AuthContext mock in setup.ts provides analyst role by default
-    // The component has a role check that prevents submission without analyst/admin role
-    // This test ensures the component renders without crashing and the role check is in place
     renderComponent();
 
     const submitBtn = screen.getByText('Ingest & Trigger Verification Audit');
     expect(submitBtn).toBeInTheDocument();
-    // Role check verified by code inspection in ImportWorkflow.tsx line 32-34
   });
 
   it('disables submit button while submitting', async () => {

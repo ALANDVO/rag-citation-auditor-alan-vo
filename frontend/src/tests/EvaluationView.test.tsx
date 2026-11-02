@@ -75,7 +75,7 @@ describe('EvaluationView Component', () => {
   it('shows loading state initially', () => {
     renderComponent();
 
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.getByText('Running...')).toBeInTheDocument();
   });
 
   it('renders benchmark metrics grid after loading', async () => {
@@ -204,8 +204,8 @@ describe('EvaluationView Component', () => {
   });
 
   it('can rerun benchmark when button clicked', async () => {
-    vi.spyOn(api, 'getBenchmark').mockResolvedValueOnce(mockBenchmark);
-    vi.spyOn(api, 'getDataset').mockResolvedValueOnce(mockDataset);
+    vi.spyOn(api, 'getBenchmark').mockResolvedValueOnce(mockBenchmark).mockResolvedValueOnce(mockBenchmark);
+    vi.spyOn(api, 'getDataset').mockResolvedValueOnce(mockDataset).mockResolvedValueOnce(mockDataset);
 
     renderComponent();
 
