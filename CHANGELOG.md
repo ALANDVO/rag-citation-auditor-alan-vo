@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.4.0 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
+## [1.3.1] - 2026-11-02
+
+### Fixed
+- Fixed frontend component test suite - all 32 tests now pass.
+- Fixed EvaluationView component: added defensive null check for execution_time_ms.toFixed() call.
+- Fixed AuditDetail tests: updated assertions to handle multiple identical metric values (Faithfulness and Precision both 67.0%) and multiple advisory buttons per claim.
+- Fixed ImportWorkflow tests: added test auth provider wrapper to properly mock user roles for role-gated features.
+- Fixed ReviewQueue test: updated to match actual component text content.
+
+### Changed
+- AuthContext now exports AuthContext for test mocking.
+- Frontend test utilities improved with proper role-based auth mocking.
+
+
+
 ## 1.3.0 — work-in-progress checkpoint
 
 Partial code published for continued development. Known issues: STATUS.md.
