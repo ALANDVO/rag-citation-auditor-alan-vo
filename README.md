@@ -204,3 +204,7 @@ For testing without an external identity server:
 
 Designed and developed by **Alan Vo** ([alanvo@gmail.com](mailto:alanvo@gmail.com)) &bull; GitHub: [ALANDVO](https://github.com/ALANDVO).  
 Licensed under the [MIT License](LICENSE).
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

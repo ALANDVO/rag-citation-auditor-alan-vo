@@ -137,3 +137,6 @@ Implementation: `frontend/src/tests/ImportWorkflow.test.tsx`, `frontend/src/test
 
 Tests: `frontend/src/tests/ImportWorkflow.test.tsx`, `frontend/src/tests/AuditDetail.test.tsx`, `frontend/src/tests/EvaluationView.test.tsx`
 
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

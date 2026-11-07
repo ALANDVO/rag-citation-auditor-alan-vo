@@ -59,3 +59,7 @@ All notable changes to this project will be documented in this file.
 - Secure Keycloak OIDC authentication with PKCE, state/nonce validation, SameSite HttpOnly cookies, CSRF protection, and role-based access control (viewer, analyst, admin).
 - Local demo mode with strict production refusal guards.
 - React + TypeScript dashboard with citation inspector, review workflow, and audit metrics.
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)
