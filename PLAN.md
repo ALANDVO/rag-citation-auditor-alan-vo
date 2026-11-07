@@ -139,4 +139,4 @@ Tests: `frontend/src/tests/ImportWorkflow.test.tsx`, `frontend/src/tests/AuditDe
 
 ---
 
-Alan Vo · [alanvo.net](https://alanvo.net)
+Alan Vo · [alanvo.net](https://alanvo.net) · [X: @alanvoasi](https://x.com/alanvoasi)
