@@ -1,8 +1,17 @@
 # Changelog
 
-## 1.5.0 — work-in-progress checkpoint
+## 1.6.0 — work-in-progress checkpoint
 
 Partial code published for continued development. Known issues: STATUS.md.
+
+## 1.5.0 — work-in-progress checkpoint
+
+### Added
+- **frontend-test-expansion**: Expanded frontend component test coverage (32 tests total)
+  - ImportWorkflow: 8 tests covering preset loading (Clean Citations, Numeric Mismatch, Unlinked Citation) and form submission flow (success, disabled while submitting, error handling)
+  - AuditDetail: 11 tests covering claim rendering with status badges and confidence, export buttons (Markdown, CSV, JSON), advisory request (Run Opt-in LLM Advisory, advisory panel display)
+  - EvaluationView: 8 tests covering metric display (Attribution F1, Precision, Recall, Numeric Detection, False Alarm Rate, Baseline Overlap F1) and dataset rendering (first 3 items, error badges)
+  - All 32 frontend tests pass, all 21 backend tests pass
 
 ## 1.4.0 — work-in-progress checkpoint
 
