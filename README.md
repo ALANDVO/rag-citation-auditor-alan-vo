@@ -3,7 +3,7 @@
 > Work in progress. This checkpoint may be incomplete or fail tests. See PLAN.md and STATUS.md before use.
 
 
-Current version: `1.1.0`.
+Current version: `1.7.0`.
 
 Retrieval-Augmented Generation (RAG) pipelines in enterprise environments frequently produce plausible-sounding answers that hallucinate citation links, invent non-existent document identifiers (e.g., `[doc_99]`), or misstate quantitative figures (percentages, financial metrics, dates, and scales) while appearing grounded. **RAG Citation & Faithfulness Auditor** is a deterministic attribution and faithfulness auditing platform for machine learning engineers, compliance auditors, and AI evaluators. It decomposes generated answers into discrete claims, validates explicit citation links against ingested passages, verifies quantitative assertions through exact and scaled entity cross-matching, and queues disputed assertions into a human evidence review workflow.
 
