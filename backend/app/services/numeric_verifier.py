@@ -32,12 +32,17 @@ class NumericVerifier:
         entities: List[NumericEntity] = []
         spans: List[Tuple[int, int]] = []
 
-        def overlaps(st: int, en: int) -> bool:
-            return any(s < en and en > s and not (en <= s or st >= e) for s, e in spans)
+        def overlaps(new_start: int, new_end: int, existing: List[Tuple[int, int]]) -> bool:
+            """Check if a new interval [new_start, new_end) overlaps with any existing interval.
+            
+            Two intervals [a, b) and [c, d) overlap iff c < b and a < d.
+            Returns True if overlap detected, False otherwise.
+            """
+            return any(existing_start < new_end and new_start < existing_end for existing_start, existing_end in existing)
 
         for m in cls.CURRENCY_PATTERN.finditer(text):
             st, en = m.span()
-            if overlaps(st, en): continue
+            if overlaps(st, en, spans): continue
             v = cls._parse_float(m.group(2))
             if v is not None:
                 mult = cls.SCALES.get((m.group(3) or "").lower(), 1.0)
@@ -47,7 +52,7 @@ class NumericVerifier:
 
         for m in cls.PERCENT_PATTERN.finditer(text):
             st, en = m.span()
-            if overlaps(st, en): continue
+            if overlaps(st, en, spans): continue
             v = cls._parse_float(m.group(1))
             if v is not None:
                 entities.append(NumericEntity(m.group(0), v, unit="percent", kind="percentage", start_char=st, end_char=en))
@@ -55,7 +60,7 @@ class NumericVerifier:
 
         for m in cls.SCALED_PATTERN.finditer(text):
             st, en = m.span()
-            if overlaps(st, en): continue
+            if overlaps(st, en, spans): continue
             v = cls._parse_float(m.group(1))
             if v is not None:
                 entities.append(NumericEntity(m.group(0), v * cls.SCALES.get(m.group(2).lower(), 1.0), unit=None, kind="scaled_number", start_char=st, end_char=en))
@@ -63,7 +68,7 @@ class NumericVerifier:
 
         for m in cls.YEAR_PATTERN.finditer(text):
             st, en = m.span(2)
-            if overlaps(st, en): continue
+            if overlaps(st, en, spans): continue
             v = cls._parse_float(m.group(2))
             if v is not None:
                 entities.append(NumericEntity(m.group(2), v, unit="year", kind="year", start_char=st, end_char=en))
@@ -71,7 +76,7 @@ class NumericVerifier:
 
         for m in cls.GENERAL_PATTERN.finditer(text):
             st, en = m.span()
-            if overlaps(st, en): continue
+            if overlaps(st, en, spans): continue
             v = cls._parse_float(m.group(1))
             if v is not None:
                 ru = m.group(2)

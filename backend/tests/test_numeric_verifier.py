@@ -41,3 +41,40 @@ def test_calendar_year_strict_matching():
     res = NumericVerifier.verify_sentence_numbers(claim, [passage])
     assert res["all_supported"] is False
     assert any("2015" in d["entity"]["raw_text"] for d in res["discrepancies"])
+
+
+def test_extract_entities_handles_adjacent_entities():
+    """Test that extract_entities correctly handles adjacent numeric entities.
+    
+    "85 out of 100" should produce both "85 out" and "100" as separate entities
+    since their spans are adjacent (not overlapping), per the overlaps function logic.
+    """
+    text = "The project scored 85 out of 100"
+    entities = NumericVerifier.extract_entities(text)
+    raw_texts = [e.raw_text for e in entities]
+    # Both "85 out" and "100" should be extracted
+    assert "85 out" in raw_texts, f"Expected '85 out' in {raw_texts}"
+    assert "100" in raw_texts, f"Expected '100' in {raw_texts}"
+    # Should have at least 2 entities
+    assert len(entities) >= 2
+
+
+def test_extract_entities_priority_specific_patterns():
+    """Test that specific patterns (currency, percent, scaled) take precedence over general pattern."""
+    text = "$10M revenue with 50% margin and 2.5 billion valuation"
+    entities = NumericVerifier.extract_entities(text)
+    kinds = {e.kind for e in entities}
+    # Should have currency, percentage, and scaled_number
+    assert "currency" in kinds, f"Expected currency kind, got {kinds}"
+    assert "percentage" in kinds, f"Expected percentage kind, got {kinds}"
+    assert "scaled_number" in kinds, f"Expected scaled_number kind, got {kinds}"
+    
+    # Verify specific values
+    curr = next(e for e in entities if e.kind == "currency")
+    assert curr.raw_text == "$10M", f"Expected '$10M', got '{curr.raw_text}'"
+    
+    pct = next(e for e in entities if e.kind == "percentage")
+    assert pct.raw_text == "50%", f"Expected '50%', got '{pct.raw_text}'"
+    
+    scaled = next(e for e in entities if e.kind == "scaled_number")
+    assert scaled.raw_text == "2.5 billion", f"Expected '2.5 billion', got '{scaled.raw_text}'"
