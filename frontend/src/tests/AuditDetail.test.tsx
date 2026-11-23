@@ -316,4 +316,29 @@ describe('AuditDetail Component', () => {
       expect(advisoryBtns.length).toBe(3); // 3 claims, all have advisory buttons for analyst role
     });
   });
-});
+  it('shows advisory button after failed advisory request', async () => {
+    vi.spyOn(api, 'getAuditRun').mockResolvedValueOnce(mockAudit);
+    const advisoryPromise = Promise.withResolvers();
+    vi.spyOn(api, 'getClaimAdvisory').mockImplementationOnce(() => advisoryPromise.promise);
+
+    renderComponent();
+
+    await waitFor(() => {
+      expect(screen.getByText('Sentence 1')).toBeInTheDocument();
+    });
+
+    const advisoryBtns = screen.getAllByText('Run Opt-in LLM Advisory');
+    expect(advisoryBtns.length).toBe(3);
+    const advisoryBtn = advisoryBtns[0];
+    fireEvent.click(advisoryBtn);
+
+    await waitFor(() => {
+      expect(screen.getByText('Analyzing...')).toBeInTheDocument();
+    });
+
+    advisoryPromise.resolve();
+
+    await waitFor(() => {
+      expect(advisoryBtn).not.toBeDisabled();
+    });
+  });});

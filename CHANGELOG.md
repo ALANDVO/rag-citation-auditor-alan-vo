@@ -1,6 +1,24 @@
 # Changelog
 
+## 1.8.0 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
 ## 1.7.0 — work-in-progress checkpoint
+## 1.7.1 — work-in-progress checkpoint
+
+### Added
+- **frontend-test-expansion**: Added test coverage for AuditDetail advisory button error handling
+  - Test: `shows advisory button after failed advisory request`
+  - Verifies button re-appears after advisory request failure for retry
+
+### Changed
+- None
+
+### Fixed
+- None
+
+
 
 Partial code published for continued development. Known issues: STATUS.md.
 
