@@ -4,7 +4,7 @@ Each round completes one feature or repair. Future items are planned, not implem
 
 ## Current round
 
-frontend-test-expansion
+numeric-unit-compat-fix
 
 ## Roadmap
 
@@ -136,6 +136,19 @@ Acceptance:
 Implementation: `frontend/src/tests/ImportWorkflow.test.tsx`, `frontend/src/tests/AuditDetail.test.tsx`, `frontend/src/tests/EvaluationView.test.tsx`
 
 Tests: `frontend/src/tests/ImportWorkflow.test.tsx`, `frontend/src/tests/AuditDetail.test.tsx`, `frontend/src/tests/EvaluationView.test.tsx`
+
+### numeric-unit-compat-fix — Numeric unit-compatibility false-support fix
+
+Status: done
+
+Acceptance:
+- A currency/percent/scaled claim with a specific unit is not reported supported by a unitless passage number of equal value
+- A unitless claim may still match a unit-bearing passage
+- Matching-unit claims remain supported
+
+Implementation: `backend/app/services/numeric_verifier.py (NumericVerifier._units_compatible, match_entity)`
+
+Tests: `backend/tests/test_numeric_verifier.py::test_currency_claim_not_supported_by_unitless_count`, `backend/tests/test_numeric_verifier.py::test_currency_claim_supported_by_matching_currency`, `backend/tests/test_numeric_verifier.py::test_unitless_claim_matches_unit_bearing_passage`
 
 ---
 

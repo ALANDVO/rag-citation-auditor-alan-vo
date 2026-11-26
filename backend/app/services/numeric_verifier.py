@@ -87,13 +87,25 @@ class NumericVerifier:
         return entities
 
     @classmethod
+    def _units_compatible(cls, claim_ent: NumericEntity, pe: NumericEntity) -> bool:
+        """Units are compatible iff equal, or the claim is unitless.
+
+        A passage entity with no unit must NOT satisfy a claim that carries a
+        specific unit (e.g. a currency claim ``$5`` is not supported by a bare
+        count ``5``). Only a unitless claim may match a unit-bearing passage.
+        """
+        if claim_ent.unit == pe.unit:
+            return True
+        return claim_ent.unit is None
+
+    @classmethod
     def match_entity(cls, claim_ent: NumericEntity, passage_ents: List[NumericEntity], tol: float = 0.05) -> Tuple[bool, Optional[NumericEntity], str]:
         if not passage_ents:
             return False, None, "No numeric entities found in cited passage(s)."
 
         for pe in passage_ents:
             if abs(claim_ent.value - pe.value) < 1e-6:
-                if claim_ent.unit == pe.unit or (claim_ent.unit is None or pe.unit is None):
+                if cls._units_compatible(claim_ent, pe):
                     return True, pe, f"Exact match found: {pe.raw_text}"
 
         if claim_ent.kind not in {"year"} and not (claim_ent.value.is_integer() and claim_ent.value > 100):
@@ -101,7 +113,7 @@ class NumericVerifier:
                 if pe.kind == claim_ent.kind:
                     diff = abs(claim_ent.value - pe.value)
                     if diff / max(abs(claim_ent.value), 1e-9) <= tol:
-                        if claim_ent.unit == pe.unit or (claim_ent.unit is None or pe.unit is None):
+                        if cls._units_compatible(claim_ent, pe):
                             return True, pe, f"Approximate match within {tol*100:.1f}% tolerance: {pe.raw_text}"
 
         closest = min(passage_ents, key=lambda p: abs(claim_ent.value - p.value))

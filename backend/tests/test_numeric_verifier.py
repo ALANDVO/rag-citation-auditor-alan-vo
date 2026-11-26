@@ -78,3 +78,30 @@ def test_extract_entities_priority_specific_patterns():
     
     scaled = next(e for e in entities if e.kind == "scaled_number")
     assert scaled.raw_text == "2.5 billion", f"Expected '2.5 billion', got '{scaled.raw_text}'"
+
+
+def test_currency_claim_not_supported_by_unitless_count():
+    """A currency claim must not be treated as supported by a bare number.
+
+    Regression: the unit-compatibility gate previously treated a passage entity
+    with ``unit=None`` as a wildcard, so ``$5`` matched a bare count ``5``.
+    """
+    claim = "Revenue was $5 [p1]."
+    passage = "The count was 5 items."
+    res = NumericVerifier.verify_sentence_numbers(claim, [passage])
+    assert res["all_supported"] is False
+    assert len(res["discrepancies"]) == 1
+
+
+def test_currency_claim_supported_by_matching_currency():
+    claim = "Revenue was $5 [p1]."
+    passage = "Revenue was $5 total."
+    res = NumericVerifier.verify_sentence_numbers(claim, [passage])
+    assert res["all_supported"] is True
+
+
+def test_unitless_claim_matches_unit_bearing_passage():
+    claim = "There were 5 [p1]."
+    passage = "There were 5 items."
+    res = NumericVerifier.verify_sentence_numbers(claim, [passage])
+    assert res["all_supported"] is True
