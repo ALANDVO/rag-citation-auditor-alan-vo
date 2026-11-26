@@ -1,8 +1,20 @@
 # Changelog
 
+## 1.9.0 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
 ## 1.8.0 — work-in-progress checkpoint
 
 Partial code published for continued development. Known issues: STATUS.md.
+
+### Fixed
+- **numeric-unit-compat-fix**: `NumericVerifier.match_entity` no longer treats a
+  unitless passage number as a wildcard match for a unit-bearing claim. A currency
+  claim `$5` is no longer reported supported by a bare count `5`. Added
+  `NumericVerifier._units_compatible` (equal units, or unitless claim) applied to
+  both exact and approximate match gates. Regression tests added in
+  `backend/tests/test_numeric_verifier.py`.
 
 ## 1.7.0 — work-in-progress checkpoint
 ## 1.7.1 — work-in-progress checkpoint
